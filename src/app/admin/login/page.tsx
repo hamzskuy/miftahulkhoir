@@ -63,10 +63,6 @@ export default function AdminLoginPage() {
             {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
-
-        <p className="mt-4 text-center text-xs text-masjid-800/60">
-          Demo: username <code className="rounded bg-masjid-50 px-1.5 py-0.5">miftahulkhoir123</code>, password <code className="rounded bg-masjid-50 px-1.5 py-0.5">123456</code>
-        </p>
       </div>
     </div>
   );

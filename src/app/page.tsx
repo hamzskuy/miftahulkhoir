@@ -30,7 +30,7 @@ export default async function HomePage() {
       <Navbar />
       <main>
         <Hero />
-        <ProfileSection />
+        <ProfileSection profileImage={home.profile_image_url} />
         <LayananSection />
 
         <section className="py-16 md:py-24">

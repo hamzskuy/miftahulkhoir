@@ -3,6 +3,13 @@ import Link from "next/link";
 
 export default async function Hero() {
   const home = await getHomepage();
+
+  // Tagline dipisah di koma: bagian pertama emas, sisanya putih.
+  const tagline = home.hero_tagline ?? "";
+  const commaIdx = tagline.indexOf(",");
+  const lineA = commaIdx >= 0 ? tagline.slice(0, commaIdx + 1) : tagline;
+  const lineB = commaIdx >= 0 ? tagline.slice(commaIdx + 1).trim() : "";
+
   return (
     <section className="relative overflow-hidden bg-masjid-950">
       <div className="relative min-h-[calc(100svh-var(--nav-h))] w-full">
@@ -22,12 +29,20 @@ export default async function Hero() {
                 <span className="h-[2px] w-8 bg-gold-400" />
                 Website Resmi
               </p>
-              <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl">
-                Masjid Miftahul Khoir
-                <br />
-                <span className="text-gold-400">Menebar Kebaikan,</span>
-                <br />
-                <span className="text-white/90">Membangun Ummah.</span>
+              <h2 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl">
+                {home.hero_title || "Masjid Miftahul Khoir"}
+                {lineA && (
+                  <>
+                    <br />
+                    <span className="text-gold-400">{lineA}</span>
+                  </>
+                )}
+                {lineB && (
+                  <>
+                    <br />
+                    <span className="text-white/90">{lineB}</span>
+                  </>
+                )}
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
                 {home.hero_description || home.hero_tagline}

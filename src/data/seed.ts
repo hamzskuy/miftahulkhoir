@@ -5,6 +5,7 @@ const now = new Date().toISOString();
 export const seedHomepage: HomepageSettings = {
   id: "homepage",
   hero_image_url: "/placeholder.svg",
+  profile_image_url: null,
   hero_title: "MASJID MIFTAHUL KHOIR",
   hero_tagline: "Menebar Kebaikan, Membangun Ummah",
   hero_description:

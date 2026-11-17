@@ -53,6 +53,14 @@ export async function GET() {
       status.tables.push(e ? `${t}: ${e.message}` : `${t}: ok`);
     }
 
+    // Kolom tambahan: foto profil masjid
+    const { error: colErr } = await sb.from("homepage_settings").select("profile_image_url").limit(1);
+    status.tables.push(
+      colErr
+        ? "homepage_settings.profile_image_url: BELUM ADA (jalankan supabase/migrations/0002_profile_image.sql)"
+        : "homepage_settings.profile_image_url: ok",
+    );
+
     // Bucket diuji dengan upload file kecil (listBuckets dibatasi RLS sehingga tidak akurat)
     if (!status.authSession) {
       status.tables.push(

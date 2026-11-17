@@ -21,6 +21,7 @@ Buka http://localhost:3000. Tanpa Supabase, website menampilkan data seed dan ad
    - (Opsional) `SUPABASE_SERVICE_ROLE_KEY` = service role key (jangan pernah diekspos ke frontend)
 3. Restart dev server: `npm run dev`.
 4. Jalankan migration: buka Supabase Dashboard → **SQL Editor** → **New query** → paste isi file `supabase/migrations/0001_init.sql` → **Run**.
+   - Migration lanjutan (mis. fitur baru): jalankan juga `supabase/migrations/0002_profile_image.sql` (kolom foto profil masjid). File migration bersifat idempotent, aman diulang.
 5. Buat storage bucket: Storage → **New bucket** → nama `media` → centang **Public**.
 6. Buat user admin: Authentication → Users → **Add user** (email + password) → lalu di SQL Editor jalankan:
    ```sql

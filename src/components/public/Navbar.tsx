@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "@/utils/icons";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 const navLinks = [
   { label: "Beranda", href: "/" },
@@ -14,6 +15,15 @@ const navLinks = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logo, setLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    const sb = createClient();
+    sb.from("homepage_settings").select("profile_image_url").eq("id", "homepage").single().then(({ data }) => {
+      setLogo((data as { profile_image_url: string | null } | null)?.profile_image_url ?? null);
+    });
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -34,7 +44,12 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 flex justify-center px-3 pt-3 md:px-6 md:pt-4">
       <div className={`flex w-full max-w-6xl items-center justify-between gap-3 rounded-full border border-masjid-800/10 bg-white/95 px-4 py-2.5 shadow-lg backdrop-blur-xl transition-all duration-300 md:px-6 ${scrolled ? "shadow-xl" : ""}`}>
         <Link href="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-masjid-800 font-display text-lg font-bold text-white">M</span>
+          {logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logo} alt="Logo Masjid Miftahul Khoir" className="h-9 w-9 rounded-full object-cover" />
+          ) : (
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-masjid-800 font-display text-lg font-bold text-white">M</span>
+          )}
           <span className="font-display text-base font-semibold text-masjid-900 md:text-lg">Miftahul Khoir</span>
         </Link>
 

@@ -58,6 +58,7 @@ export type DonationProgram = {
 export type HomepageSettings = {
   id: string;
   hero_image_url: string | null;
+  profile_image_url: string | null;
   hero_title: string;
   hero_tagline: string;
   hero_description: string;

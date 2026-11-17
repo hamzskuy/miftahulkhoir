@@ -22,6 +22,9 @@ export function friendlyError(message: string): string {
   if (/jwt expired|invalid jwt|refresh token/i.test(m)) {
     return "Sesi login kedaluwarsa. Keluar lalu login ulang di /admin/login.";
   }
+  if (/could not find the .*column|column .* does not exist/i.test(m)) {
+    return "Ada kolom database yang belum dibuat. Jalankan migration terbaru (supabase/migrations/0002_profile_image.sql) di Supabase SQL Editor, lalu coba lagi.";
+  }
 
   return m;
 }

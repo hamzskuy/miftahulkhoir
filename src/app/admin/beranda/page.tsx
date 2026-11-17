@@ -7,9 +7,12 @@ import type { HomepageSettings } from "@/types";
 
 export default function AdminBerandaPage() {
   const [form, setForm] = useState({ hero_title: "", hero_tagline: "", hero_description: "" });
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [heroFile, setHeroFile] = useState<File | null>(null);
+  const [heroPreview, setHeroPreview] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileFile, setProfileFile] = useState<File | null>(null);
+  const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -20,33 +23,47 @@ export default function AdminBerandaPage() {
       const h = (data as HomepageSettings) ?? null;
       if (h) {
         setForm({ hero_title: h.hero_title, hero_tagline: h.hero_tagline, hero_description: h.hero_description });
-        setCurrentImage(h.hero_image_url);
+        setHeroImage(h.hero_image_url);
+        setProfileImage(h.profile_image_url ?? null);
       }
       setLoading(false);
     });
   }, []);
 
-  const onFile = (f: File | null) => {
-    setFile(f);
-    if (f) setPreview(URL.createObjectURL(f)); else setPreview(null);
+  const pick = (file: File | null, setFile: (f: File | null) => void, setPreview: (p: string | null) => void) => {
+    setFile(file);
+    setPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const save = async () => {
     if (!isSupabaseConfigured()) { alert("Supabase belum dikonfigurasi. Buka /admin/setup untuk panduan."); return; }
     setSaving(true);
     const sb = createClient();
-    let hero_image_url = currentImage;
-    if (file) {
-      const ext = file.name.split(".").pop();
+
+    let hero_image_url = heroImage;
+    if (heroFile) {
+      const ext = heroFile.name.split(".").pop();
       const path = `homepage/hero-${Date.now()}.${ext}`;
-      const { error: upErr } = await sb.storage.from("media").upload(path, file, { upsert: true });
-      if (upErr) { alert("Upload gagal: " + friendlyError(upErr.message)); setSaving(false); return; }
+      const { error: upErr } = await sb.storage.from("media").upload(path, heroFile, { upsert: true });
+      if (upErr) { alert("Upload foto hero gagal: " + friendlyError(upErr.message)); setSaving(false); return; }
       const { data: pub } = sb.storage.from("media").getPublicUrl(path);
       hero_image_url = pub.publicUrl;
     }
+
+    let profile_image_url = profileImage;
+    if (profileFile) {
+      const ext = profileFile.name.split(".").pop();
+      const path = `homepage/profile-${Date.now()}.${ext}`;
+      const { error: upErr } = await sb.storage.from("media").upload(path, profileFile, { upsert: true });
+      if (upErr) { alert("Upload foto profil gagal: " + friendlyError(upErr.message)); setSaving(false); return; }
+      const { data: pub } = sb.storage.from("media").getPublicUrl(path);
+      profile_image_url = pub.publicUrl;
+    }
+
     const { error } = await sb.from("homepage_settings").upsert({
       id: "homepage",
       hero_image_url,
+      profile_image_url,
       hero_title: form.hero_title,
       hero_tagline: form.hero_tagline,
       hero_description: form.hero_description,
@@ -54,9 +71,12 @@ export default function AdminBerandaPage() {
     });
     setSaving(false);
     if (error) { alert("Gagal menyimpan: " + friendlyError(error.message)); return; }
-    setCurrentImage(hero_image_url);
-    setFile(null);
-    setPreview(null);
+    setHeroImage(hero_image_url);
+    setHeroFile(null);
+    setHeroPreview(null);
+    setProfileImage(profile_image_url);
+    setProfileFile(null);
+    setProfilePreview(null);
     alert("Beranda diperbarui.");
   };
 
@@ -65,15 +85,31 @@ export default function AdminBerandaPage() {
   return (
     <div>
       <h1 className="font-display text-3xl font-semibold text-masjid-900">Kelola Beranda</h1>
-      <p className="mt-1 text-sm text-masjid-800/70">Atur foto hero dan teks utama halaman beranda.</p>
+      <p className="mt-1 text-sm text-masjid-800/70">Atur foto hero, foto profil masjid, dan teks utama halaman beranda.</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="space-y-4">
           <div className="card">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-masjid-800/60">Preview Foto Hero</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview || currentImage || "/placeholder.svg"} alt="Hero" className="mt-3 aspect-[16/9] w-full rounded-xl object-cover" />
-            <input type="file" accept="image/*" onChange={(e) => onFile(e.target.files?.[0] ?? null)} className="mt-3 w-full text-sm" />
+            <img src={heroPreview || heroImage || "/placeholder.svg"} alt="Hero" className="mt-3 aspect-[16/9] w-full rounded-xl object-cover" />
+            <input type="file" accept="image/*" onChange={(e) => pick(e.target.files?.[0] ?? null, setHeroFile, setHeroPreview)} className="mt-3 w-full text-sm" />
+          </div>
+
+          <div className="card">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-masjid-800/60">Foto Profil Masjid</p>
+            <p className="mt-1 text-xs text-masjid-800/60">Dipakai sebagai logo di navbar dan foto pada bagian Profil. Disarankan gambar persegi (logo/foto masjid).</p>
+            <div className="mt-3 flex items-start gap-4">
+              <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-masjid-800/10 bg-masjid-50">
+                {profilePreview || profileImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profilePreview || profileImage || undefined} alt="Foto profil" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="font-display text-3xl font-bold text-masjid-800/40">M</span>
+                )}
+              </div>
+              <input type="file" accept="image/*" onChange={(e) => pick(e.target.files?.[0] ?? null, setProfileFile, setProfilePreview)} className="w-full text-sm" />
+            </div>
           </div>
         </div>
         <div className="space-y-4">
@@ -97,4 +133,3 @@ export default function AdminBerandaPage() {
     </div>
   );
 }
-
