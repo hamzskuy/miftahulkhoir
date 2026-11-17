@@ -4,7 +4,6 @@ import Link from "next/link";
 export default async function Hero() {
   const home = await getHomepage();
 
-  // Tagline dipisah di koma: bagian pertama emas, sisanya putih.
   const tagline = home.hero_tagline ?? "";
   const commaIdx = tagline.indexOf(",");
   const lineA = commaIdx >= 0 ? tagline.slice(0, commaIdx + 1) : tagline;
@@ -13,15 +12,11 @@ export default async function Hero() {
   return (
     <section className="relative overflow-hidden bg-masjid-950">
       <div className="relative min-h-[calc(100svh-var(--nav-h))] w-full">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={home.hero_image_url || "/placeholder.svg"}
           alt="Foto utama Masjid Miftahul Khoir"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-masjid-950/85 via-masjid-900/60 to-masjid-950/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-masjid-950/70 via-transparent to-transparent" />
-
         <div className="relative z-10 flex min-h-[calc(100svh-var(--nav-h))] items-center">
           <div className="container-narrow w-full">
             <div className="max-w-3xl">
@@ -29,7 +24,7 @@ export default async function Hero() {
                 <span className="h-[2px] w-8 bg-gold-400" />
                 Website Resmi
               </p>
-              <h2 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl">
+              <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl">
                 {home.hero_title || "Masjid Miftahul Khoir"}
                 {lineA && (
                   <>
