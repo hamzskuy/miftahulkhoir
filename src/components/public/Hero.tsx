@@ -10,13 +10,15 @@ export default async function Hero() {
   const lineB = commaIdx >= 0 ? tagline.slice(commaIdx + 1).trim() : "";
 
   return (
-    <section className="relative overflow-hidden bg-masjid-950">
+    <section className="relative overflow-hidden">
       <div className="relative min-h-[calc(100svh-var(--nav-h))] w-full">
         <img
           src={home.hero_image_url || "/placeholder.svg"}
           alt="Foto utama Masjid Miftahul Khoir"
           className="absolute inset-0 h-full w-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-masjid-950/90 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-masjid-950/70 via-transparent to-transparent" />
         <div className="relative z-10 flex min-h-[calc(100svh-var(--nav-h))] items-center">
           <div className="container-narrow w-full">
             <div className="max-w-3xl">
