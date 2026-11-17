@@ -61,6 +61,13 @@ export async function GET() {
         : "homepage_settings.profile_image_url: ok",
     );
 
+    for (const col of ["profile_label", "profile_heading", "profile_description", "profile_stats"]) {
+      const { error: e } = await sb.from("homepage_settings").select(col).limit(1);
+      status.tables.push(
+        e ? `homepage_settings.${col}: BELUM ADA (jalankan supabase/migrations/0003_profile_section.sql)` : `homepage_settings.${col}: ok`,
+      );
+    }
+
     // Bucket diuji dengan upload file kecil (listBuckets dibatasi RLS sehingga tidak akurat)
     if (!status.authSession) {
       status.tables.push(

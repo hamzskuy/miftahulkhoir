@@ -10,6 +10,16 @@ export const seedHomepage: HomepageSettings = {
   hero_tagline: "Menebar Kebaikan, Membangun Ummah",
   hero_description:
     "Website resmi Masjid Miftahul Khoir. Pusat ibadah, pendidikan, dan kegiatan sosial masyarakat.",
+  profile_label: "Profil Singkat",
+  profile_heading: "Masjid Miftahul Khoir",
+  profile_description:
+    "Masjid Miftahul Khoir merupakan pusat ibadah, pendidikan, dan kegiatan sosial masyarakat. Melalui website ini, jamaah dapat mengakses informasi kegiatan, galeri dokumentasi, berita, dan program donasi secara mudah.",
+  profile_stats: [
+    { label: "Ibadah", value: "Harian" },
+    { label: "Kajian", value: "Rutin" },
+    { label: "Sosial", value: "Aktif" },
+    { label: "Donasi", value: "Terbuka" },
+  ],
   updated_at: now,
 };
 

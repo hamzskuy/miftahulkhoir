@@ -62,6 +62,10 @@ export type HomepageSettings = {
   hero_title: string;
   hero_tagline: string;
   hero_description: string;
+  profile_label: string;
+  profile_heading: string;
+  profile_description: string;
+  profile_stats: { label: string; value: string }[];
   updated_at: string;
 };
 
